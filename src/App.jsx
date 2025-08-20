@@ -2,7 +2,13 @@ import React , { useState } from 'react'
 
 const App = () => {
 
- const [todos , setTodos] = useState([])
+
+ // Load todos from localStorage only once (initial State)
+
+ const [todos , setTodos] = useState(() => {
+   const savedTodos = localStorage.getItem('todos')
+   return savedTodos ? JSON.parse(savedTodos) : []
+ })
  
  // todos type : Array
 
@@ -15,8 +21,11 @@ const App = () => {
  const [filter , setFilter] = useState('all')
 
 
-
-
+ // Helper function to update todos and save to localStorage
+const updateTodos = (updatedTodos) => {
+  setTodos(updatedTodos)
+  localStorage.setItem('todos' , JSON.stringify(updatedTodos))
+}
 
  
  const addTodo = () => {
@@ -24,16 +33,16 @@ const App = () => {
   
   // newTodo is an Object
 
-  setTodos([...todos , newTodo]) // update our todos state
+  updateTodos([...todos , newTodo]) // update our todos state and save in the localStorage
   setNewTask('')
  }
 
 
  const toggleTodo = (id) => {
-    setTodos(todos.map(todo => todo.id === id ? { ...todo , completed: !todo.completed } : todo ))
+  const updatedTodo = todos.map(todo => todo.id === id ? { ...todo , completed: !todo.completed } : todo )
+  updateTodos(updatedTodo)
  }
 
- console.log(todos);
  
 
 //  const add = (a , b) => {
